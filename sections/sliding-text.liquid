@@ -1,0 +1,271 @@
+<section class="cstm-sliding-section">
+  <div id="section-id-{{section.id}}">
+    {%- if block.settings.text != blank %}
+      <div class="logoMarqueeSection">
+        <div class="container" id="logoMarqueeSection">
+          <div class="default-content-container flex items-center">
+            <div
+              class="marquee-wrapper relative overflow-hidden inline-block"
+            >
+              <div class="marquee">
+                {% for block in section.blocks %}
+                  <div class="rte__image js-no-transition">
+                    <p>{{ block.settings.text }}</p>
+                    {%- if block.settings.image -%}
+                      {{-
+                        block.settings.image
+                        | image_url: width: block.settings.image.image_width
+                        | image_tag:
+                          loading: 'lazy',
+                          sizes: '(max-width: 699px) 90px, 180px',
+                          widths: '90,180,270,360,540'
+                      -}}
+                    {%- endif -%}
+                  </div>
+                {% endfor %}
+              </div>
+
+              <!-- second -->
+              <div class="marquee">
+                {% for block in section.blocks %}
+                  <div class="rte__image js-no-transition">
+                    <p>{{ block.settings.text }}</p>
+                    {%- if block.settings.image -%}
+                      {{-
+                        block.settings.image
+                        | image_url: width: block.settings.image.image_width
+                        | image_tag:
+                          loading: 'lazy',
+                          sizes: '(max-width: 699px) 90px, 180px',
+                          widths: '90,180,270,360,540'
+                      -}}
+                    {%- endif -%}
+                  </div>
+                {% endfor %}
+              </div>
+              <!-- third -->
+              <div class="marquee">
+                {% for block in section.blocks %}
+                  <div class="rte__image js-no-transition">
+                    <p>{{ block.settings.text }}</p>
+                    {%- if block.settings.image -%}
+                      {{-
+                        block.settings.image
+                        | image_url: width: block.settings.image.image_width
+                        | image_tag:
+                          loading: 'lazy',
+                          sizes: '(max-width: 699px) 90px, 180px',
+                          widths: '90,180,270,360,540'
+                      -}}
+                    {%- endif -%}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+  <style>
+      {% comment %} marquee  {% endcomment %}
+     #section-id-{{ section.id }} .logoMarqueeSection {
+        overflow-x: hidden;
+      }
+
+     #section-id-{{ section.id }} #logoMarqueeSection {
+        max-width: 1920px !important;
+        margin: 0 auto;
+        overflow-x: hidden;
+        padding: 0px 0px 40px 0px;
+      }
+
+    #section-id-{{ section.id }}  .default-content-container {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-left: 5rem;
+        padding-right: 5rem;
+        padding-top: 4.5rem;
+        padding-bottom: 4.5rem;
+        width: 100%;
+      }
+
+    #section-id-{{ section.id }}  div.marquee > div {
+        height: {{section.settings.container_height}}px;
+        display: inline-flex;
+        align-items: center;
+        gap:10px
+      }
+      #section-id-{{ section.id }}  div.marquee > div>p {
+        font-size:{{section.settings.font_size}}px;
+        color: {{section.settings.font_color}} ;
+      }
+     #section-id-{{ section.id }} .logoMarqueeSection > div > div {
+        padding-top: 0;
+        padding-bottom: 0;
+        min-height: 0;
+      }
+
+     #section-id-{{ section.id }} .marquee-wrapper {
+        display: inline-block;
+        white-space: nowrap;
+        background-color: {{section.settings.bg_color}} ;
+      }
+
+    #section-id-{{ section.id }} .marquee {
+        display: inline-block;
+
+        white-space: nowrap;
+        position: relative;
+        transform: translate3d(0%, 0, 0);
+        animation-name: marquee;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-duration : {{ section.settings.scroll_time }}s
+      }
+
+     #section-id-{{ section.id }} .marquee >div {
+
+        white-space: nowrap;
+        padding-right: 5.4rem;
+      }
+
+     #section-id-{{ section.id }} .marquee-wrapper:hover .marquee {
+        animation-play-state:{{section.settings.pause_text}} !important;
+      }
+      @keyframes marquee {
+        0% {
+          transform: translate3d( {% if section.settings.direction_reverse %} -100%{% else %}0% {% endif %}, 0, 0);
+        }
+
+        100% {
+          transform: translate3d({% if section.settings.direction_reverse %} 0%{% else %}-100% {% endif %}, 0, 0);
+        }
+      }
+
+      body {
+        overflow-x: hidden;
+      }
+
+      #section-id-{{ section.id }}  .default-content-container.flex.items-center {
+        padding-left: 0px;
+        padding-right: 0px;
+      }
+      #section-id-{{ section.id }} .custom__item-inner.custom__item-inner--liquid {
+        padding: 0px;
+      }
+      .rte__image > img {
+        width:  {{ section.settings.image_width}}px !important;
+        height:auto
+      }
+  </style>
+</section>
+{% schema %}
+{
+  "name": "Sliding Text",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color"
+    },
+    {
+      "type": "text",
+      "label": "Scroll Time",
+      "id": "scroll_time",
+      "default": "10"
+    },
+    {
+      "type": "color",
+      "id": "font_color",
+      "label": "Font color",
+      "default": "#000000"
+    },
+
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 8,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "container_height",
+      "min": 100,
+      "max": 250,
+      "step": 10,
+      "unit": "px",
+      "label": "height",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "min": 30,
+      "max": 250,
+      "step": 10,
+      "unit": "px",
+      "label": "image width",
+      "default": 80
+    },
+    {
+      "type": "select",
+      "id": "pause_text",
+      "label": "Pause text on mouse hover",
+      "options": [
+        {
+          "value": "paused",
+          "label": "Yes"
+        },
+        {
+          "value": "initial",
+          "label": "No"
+        }
+      ],
+      "default": "paused"
+    },
+    {
+      "type": "checkbox",
+      "id": "direction_reverse",
+      "default": false,
+      "label": "direction reverse"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Sliding text",
+      "type": "block",
+      "settings": [
+        {
+          "type": "text",
+          "label": "Add Text",
+          "id": "text"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "image",
+          "info": "500 x 500px .jpg recommended"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sliding Text"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
