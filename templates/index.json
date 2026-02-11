@@ -9,6 +9,76 @@
  */
 {
   "sections": {
+    "hero_section_fMkKcU": {
+      "type": "hero-section",
+      "blocks": {
+        "slide_kFbTVA": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/rice.png",
+            "overlay_opacity": 30,
+            "heading": "Slide Heading",
+            "heading_size": 60,
+            "subheading": "<p>Slide description goes here.</p>",
+            "subheading_size": 18,
+            "text_alignment": "center",
+            "button_text": "",
+            "button_link": "",
+            "text_color": "#FFFFFF",
+            "button_bg_color": "#FFFFFF",
+            "button_text_color": "#000000"
+          }
+        },
+        "slide_NV4qBE": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/Media_grid_-_accessories.webp",
+            "overlay_opacity": 30,
+            "heading": "Slide Heading",
+            "heading_size": 60,
+            "subheading": "<p>Slide description goes here.</p>",
+            "subheading_size": 18,
+            "text_alignment": "center",
+            "button_text": "",
+            "button_link": "",
+            "text_color": "#FFFFFF",
+            "button_bg_color": "#FFFFFF",
+            "button_text_color": "#000000"
+          }
+        },
+        "slide_a6Ld8j": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/fast-food-wallpaper-18_1.jpg",
+            "overlay_opacity": 30,
+            "heading": "Slide Heading",
+            "heading_size": 60,
+            "subheading": "<p>Slide description goes here.</p>",
+            "subheading_size": 18,
+            "text_alignment": "center",
+            "button_text": "",
+            "button_link": "",
+            "text_color": "#FFFFFF",
+            "button_bg_color": "#FFFFFF",
+            "button_text_color": "#000000"
+          }
+        }
+      },
+      "block_order": [
+        "slide_kFbTVA",
+        "slide_NV4qBE",
+        "slide_a6Ld8j"
+      ],
+      "name": "Hero Slider",
+      "settings": {
+        "section_height": 80,
+        "enable_autoplay": true,
+        "autoplay_speed": 5,
+        "bg_color": "#f4f4f4",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
     "image_banner": {
       "type": "image-banner",
       "blocks": {
@@ -239,6 +309,7 @@
     }
   },
   "order": [
+    "hero_section_fMkKcU",
     "image_banner",
     "rich_text",
     "featured_collection",
