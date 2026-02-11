@@ -11,19 +11,43 @@
     }
   }
 
-  .hero-section-{{ section.id }} {
+  /* Slider Container */
+  .hero-slider-wrapper-{{ section.id }} {
     position: relative;
     width: 100%;
-    height: {{ section.settings.section_height }}vh;
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: {{ section.settings.text_alignment }};
     overflow: hidden;
     background-color: {{ section.settings.bg_color }};
   }
 
-  .hero-background-{{ section.id }} {
+  .hero-slider-{{ section.id }} {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    height: {{ section.settings.section_height }}vh;
+    min-height: 400px;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .hero-slider-{{ section.id }}::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+
+  /* Individual Slide */
+  .hero-slide-{{ section.id }} {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    scroll-snap-align: start;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero-background {
     position: absolute;
     top: 0;
     left: 0;
@@ -32,149 +56,318 @@
     z-index: 1;
   }
 
-  .hero-background-{{ section.id }} img {
+  .hero-background img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
   }
-  
-  .hero-overlay-{{ section.id }} {
+
+  .hero-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
     z-index: 2;
+    pointer-events: none;
   }
 
-  .hero-content-{{ section.id }} {
+  .hero-content {
     position: relative;
     z-index: 3;
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
     padding: 0 2rem;
-    text-align: {{ section.settings.text_alignment }};
-    color: {{ section.settings.text_color }};
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
   }
 
-  .hero-heading-{{ section.id }} {
-    font-size: {{ section.settings.heading_size }}px;
+  /* Animate content when slide is active (handled by JS toggling class) */
+  .hero-slide-{{ section.id }}.active .hero-content {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .hero-heading {
     line-height: 1.2;
     margin-bottom: 1rem;
-    color: {{ section.settings.text_color }};
     font-weight: bold;
   }
 
-  .hero-subheading-{{ section.id }} {
-    font-size: {{ section.settings.subheading_size }}px;
+  .hero-subheading {
     line-height: 1.5;
     margin-bottom: 2rem;
-    color: {{ section.settings.text_color }};
     max-width: 800px;
-    {% if section.settings.text_alignment == 'center' %}
-      margin-left: auto;
-      margin-right: auto;
-    {% elsif section.settings.text_alignment == 'right' %}
-       margin-left: auto;
-    {% endif %}
   }
 
-  .hero-btn-{{ section.id }} {
+  .hero-btn {
     display: inline-block;
     padding: 12px 32px;
-    background-color: {{ section.settings.button_bg_color }};
-    color: {{ section.settings.button_text_color }};
     text-decoration: none;
     font-size: 16px;
     font-weight: 600;
     border-radius: 4px;
     transition: all 0.3s ease;
-    border: 2px solid {{ section.settings.button_bg_color }};
+    cursor: pointer;
   }
 
-  .hero-btn-{{ section.id }}:hover {
-    background-color: transparent;
-    color: {{ section.settings.button_bg_color }};
+  .hero-btn:hover {
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+
+  /* Navigation Arrows */
+  .slider-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+    backdrop-filter: blur(5px);
+  }
+
+  .slider-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .prev-btn { left: 20px; }
+  .next-btn { right: 20px; }
+
+  .slider-nav-btn svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Pagination Dots */
+  .slider-dots {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 10px;
+  }
+
+  .slider-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    padding: 0;
+  }
+
+  .slider-dot.active {
+    background: white;
+    transform: scale(1.2);
   }
 
   @media screen and (max-width: 768px) {
-    .hero-heading-{{ section.id }} {
-      font-size: {{ section.settings.heading_size | times: 0.7 | round }}px;
+    .hero-slider-{{ section.id }} {
+      height: auto;
+      min-height: {{ section.settings.section_height | times: 0.8 }}vh;
     }
-    .hero-subheading-{{ section.id }} {
-      font-size: {{ section.settings.subheading_size | times: 0.9 | round }}px;
+    .hero-slide-{{ section.id }} {
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+      min-height: {{ section.settings.section_height | times: 0.8 }}vh;
     }
-    .hero-section-{{ section.id }} {
-        height: auto;
-        min-height: {{ section.settings.section_height | times: 0.8 }}vh;
-        padding-top: 4rem;
-        padding-bottom: 4rem;
+    .slider-nav-btn {
+      width: 40px;
+      height: 40px;
     }
+    .prev-btn { left: 10px; }
+    .next-btn { right: 10px; }
   }
 {%- endstyle -%}
 
-<div class="hero-section-{{ section.id }} section-{{ section.id }}-padding">
+<div class="hero-slider-wrapper-{{ section.id }} section-{{ section.id }}-padding">
   
-  {%- if section.settings.image != blank -%}
-    <div class="hero-background-{{ section.id }}">
-      {{ section.settings.image | image_url: width: 3840 | image_tag:
-        loading: 'eager',
-        width: section.settings.image.width,
-        height: section.settings.image.height,
-        class: 'hero-image',
-        sizes: '100vw',
-        widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
-      }}
-    </div>
-  {%- endif -%}
+  <div class="hero-slider-{{ section.id }}" id="HeroSlider-{{ section.id }}">
+    {%- for block in section.blocks -%}
+      <div 
+        class="hero-slide-{{ section.id }}" 
+        data-index="{{ forloop.index0 }}"
+        {{ block.shopify_attributes }}
+        style="justify-content: {{ block.settings.text_alignment }};"
+      >
+        
+        {%- if block.settings.image != blank -%}
+          <div class="hero-background">
+            {{ block.settings.image | image_url: width: 3840 | image_tag:
+              loading: 'eager',
+              width: block.settings.image.width,
+              height: block.settings.image.height,
+              sizes: '100vw',
+              widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840'
+            }}
+          </div>
+        {%- endif -%}
 
-  <div class="hero-overlay-{{ section.id }}"></div>
+        <div class="hero-overlay" style="background: rgba(0, 0, 0, {{ block.settings.overlay_opacity | divided_by: 100.0 }});"></div>
 
-  <div class="hero-content-{{ section.id }}">
-    {%- if section.settings.heading != blank -%}
-      <h2 class="hero-heading-{{ section.id }}">
-        {{ section.settings.heading }}
-      </h2>
-    {%- endif -%}
+        <div class="hero-content" style="text-align: {{ block.settings.text_alignment }}; color: {{ block.settings.text_color }};">
+          {%- if block.settings.heading != blank -%}
+            <h2 class="hero-heading" style="color: {{ block.settings.text_color }}; font-size: {{ block.settings.heading_size }}px;">
+              {{ block.settings.heading }}
+            </h2>
+          {%- endif -%}
 
-    {%- if section.settings.subheading != blank -%}
-      <div class="hero-subheading-{{ section.id }}">
-        {{ section.settings.subheading }}
+          {%- if block.settings.subheading != blank -%}
+            <div class="hero-subheading" style="color: {{ block.settings.text_color }}; font-size: {{ block.settings.subheading_size }}px;">
+               {% comment %} Centering logic handled by flex container justification, but text alignment needs specific handling if mixed {% endcomment %}
+               {{ block.settings.subheading }}
+            </div>
+          {%- endif -%}
+
+          {%- if block.settings.button_text != blank and block.settings.button_link != blank -%}
+            <a href="{{ block.settings.button_link }}" class="hero-btn" style="background-color: {{ block.settings.button_bg_color }}; color: {{ block.settings.button_text_color }}; border: 1px solid {{ block.settings.button_bg_color }};">
+              {{ block.settings.button_text }}
+            </a>
+          {%- endif -%}
+        </div>
       </div>
-    {%- endif -%}
-
-    {%- if section.settings.button_text != blank and section.settings.button_link != blank -%}
-      <a href="{{ section.settings.button_link }}" class="hero-btn-{{ section.id }}">
-        {{ section.settings.button_text }}
-      </a>
-    {%- endif -%}
+    {%- endfor -%}
   </div>
+
+  {% if section.blocks.size > 1 %}
+    <button class="slider-nav-btn prev-btn" id="PrevBtn-{{ section.id }}" aria-label="Previous Slide">
+      <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="slider-nav-btn next-btn" id="NextBtn-{{ section.id }}" aria-label="Next Slide">
+      <svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+    <div class="slider-dots" id="Dots-{{ section.id }}">
+      {%- for block in section.blocks -%}
+        <button class="slider-dot {% if forloop.first %}active{% endif %}" data-index="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}"></button>
+      {%- endfor -%}
+    </div>
+  {% endif %}
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.getElementById('HeroSlider-{{ section.id }}');
+    const prevBtn = document.getElementById('PrevBtn-{{ section.id }}');
+    const nextBtn = document.getElementById('NextBtn-{{ section.id }}');
+    const dots = document.querySelectorAll('#Dots-{{ section.id }} .slider-dot');
+    const slides = document.querySelectorAll('.hero-slide-{{ section.id }}');
+    const autoplaySpeed = {{ section.settings.autoplay_speed | default: 5 }} * 1000;
+    const isAutoplay = {{ section.settings.enable_autoplay | default: false }};
+    let autoplayInterval;
+
+    if (!slider) return;
+
+    // Intersection Observer to detect active slide
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Update active class on slide content
+          slides.forEach(s => s.classList.remove('active'));
+          entry.target.classList.add('active');
+
+          // Update dots
+          const index = parseInt(entry.target.dataset.index);
+          updateDots(index);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    slides.forEach(slide => observer.observe(slide));
+
+    function updateDots(index) {
+      if(dots.length === 0) return;
+      dots.forEach(d => d.classList.remove('active'));
+      if(dots[index]) dots[index].classList.add('active');
+    }
+
+    function scrollToSlide(index) {
+      const slideWidth = slider.clientWidth;
+      slider.scrollTo({
+        left: slideWidth * index,
+        behavior: 'smooth'
+      });
+    }
+
+    if (prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => {
+        slider.scrollBy({ left: -slider.clientWidth, behavior: 'smooth' });
+        resetAutoplay();
+        });
+
+        nextBtn.addEventListener('click', () => {
+        // If at end, loop back (optional, but scrollBy won't loop naturally)
+        // Simple logic: scroll next. If we want infinite loop, we need more complex JS.
+        // For basic scroll snap, just scroll.
+        if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 10) {
+            slider.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' });
+        }
+        resetAutoplay();
+        });
+    }
+
+    if(dots.length > 0) {
+        dots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            scrollToSlide(index);
+            resetAutoplay();
+        });
+        });
+    }
+
+    function startAutoplay() {
+      if (!isAutoplay) return;
+      autoplayInterval = setInterval(() => {
+        if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 10) {
+             slider.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+             slider.scrollBy({ left: slider.clientWidth, behavior: 'smooth' });
+        }
+      }, autoplaySpeed);
+    }
+
+    function resetAutoplay() {
+      clearInterval(autoplayInterval);
+      startAutoplay();
+    }
+
+    // Initial Active
+    if(slides.length > 0) slides[0].classList.add('active');
+    startAutoplay();
+  });
+</script>
 
 {% schema %}
 {
-  "name": "Custom Hero Section",
+  "name": "Hero Slider",
   "tag": "section",
   "class": "section",
   "settings": [
-    {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Background Image"
-    },
-    {
-      "type": "range",
-      "id": "overlay_opacity",
-      "min": 0,
-      "max": 90,
-      "step": 10,
-      "unit": "%",
-      "label": "Overlay Opacity",
-      "default": 30
-    },
     {
       "type": "range",
       "id": "section_height",
@@ -186,97 +379,20 @@
       "default": 80
     },
     {
-      "type": "header",
-      "content": "Content Settings"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Welcome to our Store"
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Enable Autoplay",
+      "default": true
     },
     {
       "type": "range",
-      "id": "heading_size",
-      "min": 20,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "label": "Heading Font Size",
-      "default": 60
-    },
-    {
-      "type": "richtext",
-      "id": "subheading",
-      "label": "Subheading",
-      "default": "<p>Discover our amazing products and offers.</p>"
-    },
-    {
-      "type": "range",
-      "id": "subheading_size",
-      "min": 14,
-      "max": 40,
+      "id": "autoplay_speed",
+      "min": 3,
+      "max": 10,
       "step": 1,
-      "unit": "px",
-      "label": "Subheading Font Size",
-      "default": 18
-    },
-    {
-      "type": "select",
-      "id": "text_alignment",
-      "label": "Text Alignment",
-      "options": [
-        {
-          "value": "left",
-          "label": "Left"
-        },
-        {
-          "value": "center",
-          "label": "Center"
-        },
-        {
-          "value": "right",
-          "label": "Right"
-        }
-      ],
-      "default": "center"
-    },
-    {
-      "type": "header",
-      "content": "Button Settings"
-    },
-    {
-      "type": "text",
-      "id": "button_text",
-      "label": "Button Text",
-      "default": "Shop Now"
-    },
-    {
-      "type": "url",
-      "id": "button_link",
-      "label": "Button Link"
-    },
-    {
-      "type": "header",
-      "content": "Color Settings"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text Color",
-      "default": "#FFFFFF"
-    },
-    {
-      "type": "color",
-      "id": "button_bg_color",
-      "label": "Button Background",
-      "default": "#000000"
-    },
-    {
-      "type": "color",
-      "id": "button_text_color",
-      "label": "Button Text Color",
-      "default": "#FFFFFF"
+      "unit": "s",
+      "label": "Autoplay Speed",
+      "default": 5
     },
     {
       "type": "color",
@@ -296,7 +412,7 @@
       "step": 4,
       "unit": "px",
       "label": "Padding Top",
-      "default": 36
+      "default": 0
     },
     {
       "type": "range",
@@ -306,12 +422,136 @@
       "step": 4,
       "unit": "px",
       "label": "Padding Bottom",
-      "default": 36
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background Image"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "min": 0,
+          "max": 90,
+          "step": 10,
+          "unit": "%",
+          "label": "Overlay Opacity",
+          "default": 30
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Slide Heading"
+        },
+        {
+          "type": "range",
+          "id": "heading_size",
+          "min": 20,
+          "max": 100,
+          "step": 2,
+          "unit": "px",
+          "label": "Heading Font Size",
+          "default": 60
+        },
+        {
+          "type": "richtext",
+          "id": "subheading",
+          "label": "Subheading",
+          "default": "<p>Slide description goes here.</p>"
+        },
+        {
+          "type": "range",
+          "id": "subheading_size",
+          "min": 14,
+          "max": 40,
+          "step": 1,
+          "unit": "px",
+          "label": "Subheading Font Size",
+          "default": 18
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text Alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "header",
+          "content": "Button"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button Link"
+        },
+        {
+          "type": "header",
+          "content": "Colors"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "button_bg_color",
+          "label": "Button Background",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "color",
+          "id": "button_text_color",
+          "label": "Button Text Color",
+          "default": "#000000"
+        }
+      ]
     }
   ],
   "presets": [
     {
-      "name": "Custom Hero Section"
+      "name": "Hero Slider",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        }
+      ]
     }
   ]
 }
