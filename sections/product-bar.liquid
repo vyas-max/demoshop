@@ -1,0 +1,359 @@
+{%- style -%}
+  .product-bar-{{ section.id }} {
+    padding: {{ section.settings.padding_top }}px 2rem {{ section.settings.padding_bottom }}px 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  .product-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .product-bar-header h2 {
+    font-size: 2.4rem;
+    margin: 0;
+    font-weight: 700;
+    color: #000;
+  }
+
+  .product-bar-view-all {
+    font-size: 1.2rem;
+    color: #666;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .product-bar-view-all:hover {
+    color: #48c9ff;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  .product-card {
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .product-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  }
+
+  .product-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .product-image-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  /* Badge styling */
+  .save-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff4d4d;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 5px; /* Pill shaped in image but looks like a rounded rect */
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    z-index: 2;
+    text-transform: uppercase;
+  }
+
+  /* Mini-slider arrows (visual only as per image) */
+  .card-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: #666;
+    font-size: 10px;
+    opacity: 0.6;
+  }
+  .card-arrow-left { left: 5px; }
+  .card-arrow-right { right: 5px; }
+
+  /* Gallery dots (visual only as per image) */
+  .gallery-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 1rem;
+  }
+  .gallery-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e0e0e0;
+  }
+  .gallery-dot.active {
+    background: #48c9ff;
+  }
+
+  .product-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-vendor {
+    color: #48c9ff;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .product-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 0 0 0.8rem 0;
+    color: #000;
+    text-decoration: none;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .product-price-row {
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  .current-price {
+    font-weight: 700;
+    color: #000;
+    margin-right: 0.8rem;
+  }
+
+  .compare-price {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 1.2rem;
+    font-weight: 400;
+  }
+
+  .add-to-cart-btn {
+    width: 100%;
+    background-color: #48c9ff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 12px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+  }
+
+  .add-to-cart-btn:hover {
+    background-color: #38b9ef;
+  }
+
+  @media screen and (max-width: 1024px) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media screen and (max-width: 600px) {
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+    .product-bar-{{ section.id }} {
+      padding: 2rem 1rem;
+    }
+  }
+{%- endstyle -%}
+
+<div class="product-bar-{{ section.id }}">
+  <div class="product-bar-header">
+    <h2>{{ section.settings.heading }}</h2>
+    {%- if section.settings.show_view_all -%}
+      <a href="{{ collections[section.settings.collection].url }}" class="product-bar-view-all">
+        {{ section.settings.view_all_text }}
+      </a>
+    {%- endif -%}
+  </div>
+
+  <div class="product-grid">
+    {%- assign collection = collections[section.settings.collection] -%}
+    {%- if collection != blank and collection.products.size > 0 -%}
+      {%- for product in collection.products limit: section.settings.product_limit -%}
+        <div class="product-card">
+          {%- if product.compare_at_price > product.price -%}
+            {%- assign savings = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+            <span class="save-badge">SAVE {{ savings }}%</span>
+          {%- endif -%}
+
+          <div class="product-image-wrapper">
+            {%- if product.featured_image != blank -%}
+              <img src="{{ product.featured_image | image_url: width: 600 }}" alt="{{ product.title }}" loading="lazy">
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- endif -%}
+            
+            <div class="card-arrow card-arrow-left">❮</div>
+            <div class="card-arrow card-arrow-right">❯</div>
+          </div>
+
+          <div class="gallery-dots">
+            <div class="gallery-dot active"></div>
+            <div class="gallery-dot"></div>
+            <div class="gallery-dot"></div>
+          </div>
+
+          <div class="product-info">
+            <div class="product-vendor">{{ product.vendor }}</div>
+            <a href="{{ product.url }}" class="product-title">{{ product.title }}</a>
+            
+            <div class="product-price-row">
+              <span class="current-price">{{ product.price | money }}</span>
+              {%- if product.compare_at_price > product.price -%}
+                <span class="compare-price">{{ product.compare_at_price | money }}</span>
+              {%- endif -%}
+            </div>
+
+            <product-form>
+              {%- form 'product', product, id: nil, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="submit" name="add" class="add-to-cart-btn">
+                  Add to Cart
+                </button>
+              {%- endform -%}
+            </product-form>
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      {%- for i in (1..4) -%}
+        <div class="product-card">
+          <div class="product-image-wrapper">
+            {{ 'product-' | append: i | placeholder_svg_tag: 'placeholder-svg' }}
+            <div class="card-arrow card-arrow-left">❮</div>
+            <div class="card-arrow card-arrow-right">❯</div>
+          </div>
+          <div class="gallery-dots">
+            <div class="gallery-dot active"></div>
+            <div class="gallery-dot"></div>
+            <div class="gallery-dot"></div>
+          </div>
+          <div class="product-info">
+            <div class="product-vendor">FMH Gear</div>
+            <div class="product-title">Sample Product Title | Logo Front, Fishermanshub.com...</div>
+            <div class="product-price-row">
+              <span class="current-price">₹ 1,200.00</span>
+            </div>
+            <button class="add-to-cart-btn">Add to Cart</button>
+          </div>
+        </div>
+      {%- endfor -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product Bar",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Winter Collection Sale"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_limit",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Products to show",
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View all' link",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_text",
+      "label": "View all link text",
+      "default": "View all"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Bar"
+    }
+  ]
+}
+{% endschema %}
