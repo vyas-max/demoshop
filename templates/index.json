@@ -9,27 +9,6 @@
  */
 {
   "sections": {
-    "hero_section_tp6PR8": {
-      "type": "hero-section",
-      "name": "Custom Hero Section",
-      "settings": {
-        "overlay_opacity": 30,
-        "section_height": 80,
-        "heading": "Welcome to our Store",
-        "heading_size": 60,
-        "subheading": "<p>Discover our amazing products and offers.</p>",
-        "subheading_size": 18,
-        "text_alignment": "center",
-        "button_text": "Shop Now",
-        "button_link": "",
-        "text_color": "#FFFFFF",
-        "button_bg_color": "#000000",
-        "button_text_color": "#FFFFFF",
-        "bg_color": "#f4f4f4",
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
     "image_banner": {
       "type": "image-banner",
       "blocks": {
@@ -260,7 +239,6 @@
     }
   },
   "order": [
-    "hero_section_tp6PR8",
     "image_banner",
     "rich_text",
     "featured_collection",
